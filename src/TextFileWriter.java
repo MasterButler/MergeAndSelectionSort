@@ -8,7 +8,6 @@ public class TextFileWriter {
 	public static boolean save(String filename, String log){
 
 		try {
-			System.out.println("FILE NAME == " + filename);
 			File file = new File(filename);
 			file.createNewFile();
 			

@@ -27,6 +27,12 @@ public class Driver {
 				NumberList list = null;
 				
 				switch(input){
+					case 1: 
+						System.out.println("Enter all values to be sorted. Separate them with a comma (','). End your input by pressing ENTER.");
+						sc.nextLine();
+						String values = sc.nextLine();
+						list = createListFromString(values);
+						break;
 					case 2:
 						System.out.print("Enter how many values will be randomly generated (MAX SIZE OF AN ARRAYLIST IS " + Integer.MAX_VALUE +  " : ");
 						int size = sc.nextInt();
@@ -89,5 +95,16 @@ public class Driver {
 		}	
 		listString += "]";
 		return listString;
+	}
+	
+	public static NumberList createListFromString(String values){
+		NumberList list = new NumberList();
+		
+		String[] rawValues = values.split(",");
+		for(int i = 0; i < rawValues.length; i++){
+			list.add(Integer.valueOf(rawValues[i].trim()));
+		}
+		
+		return list;
 	}
 }

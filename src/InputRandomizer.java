@@ -11,7 +11,7 @@ public class InputRandomizer {
 		Random rand = new Random();
 		for(int i = 0; i < n; i++){
 			randomList.add(rand.nextInt());
-			System.out.println(randomList.get(i));
+//			System.out.println(i);
 		}
 		
 		return randomList;

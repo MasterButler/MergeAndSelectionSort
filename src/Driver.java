@@ -134,7 +134,7 @@ public class Driver {
 		System.out.print("\n" + log);
 		
 		if(TextFileWriter.save(filename, log)){
-			System.out.println("Results saved under " + filename);
+			System.out.println("Results saved under \"" + new File(filename).getAbsolutePath() + "\"");
 		}else{
 			System.out.println("Problems encountered when saving results under " + filename + ". Saving aborted.");
 		}

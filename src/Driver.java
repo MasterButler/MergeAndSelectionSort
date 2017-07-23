@@ -4,8 +4,9 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Driver {
+	public static Scanner sc = new Scanner(System.in);
+	
 	public static void main(String[] args){
-		Scanner sc = new Scanner(System.in);
 		int input;
 		do{
 			System.out.println("0 - Exit");
@@ -33,28 +34,29 @@ public class Driver {
 	}
 	
 	public static void enterInputManually(){
-		Scanner sc = new Scanner(System.in);
 		NumberList list = null;
 		
 		System.out.println("Enter all values to be sorted. Separate them with a comma (','). End your input by pressing ENTER.");
+		sc.nextLine();
 		String values = sc.nextLine();
 		list = createListFromString(values);
-		solve(list);
+		System.out.println("Entered " + writeListState(list));
+		solve(list); 
+		
 	}
 	
 	public static void enterInputUsingRandom(){
-		Scanner sc = new Scanner(System.in);
 		NumberList list = null;
 		
 		System.out.print("Enter how many values will be randomly generated (MAX SIZE OF AN ARRAYLIST IS " + Integer.MAX_VALUE +  " : ");
 		int size = sc.nextInt();
 		list = InputRandomizer.generateRandomInput(size);
 		solve(list);
+		
 	}
 	
 	public static void enterInputUsingFile(){
 		TextFileChooser chooser = new TextFileChooser();
-		Scanner sc = new Scanner(System.in);
 		int userChoice = chooser.showDialog(null, "Select");
 		
 		TextFileReader reader = new TextFileReader();
@@ -87,17 +89,18 @@ public class Driver {
 			}
 		}
 		
-			
 	}
 	
 	private static void solve(NumberList list){
-		solve(list, false);
+		solve(list, true);
 	}
 	
 	private static void solve(NumberList list, boolean legit){
 		if(legit){
-			NumberList listForSteps = new NumberList();
-			listForSteps.addAll(list);
+			NumberList listForStepsSelection = new NumberList();
+			NumberList listForStepsMerge = new NumberList();
+			listForStepsSelection.addAll(list);
+			listForStepsMerge.addAll(list);
 			
 			SortingAlgorithm mergeSort = new MergeSort();
 			SortingAlgorithm selectionSort = new SelectionSort();
@@ -119,10 +122,8 @@ public class Driver {
 			NumberList selectionSorted = selectionSort.sort(list);
 			selectionSortTimer.stop();
 			
-			System.out.println("STARTING MERGE SORT");
-			
-			Result mergeSortedResults = new Result();
-			Result selectionSortedResults = new Result();
+			Result mergeSortedResults = mergeSort.sortWithSteps(listForStepsSelection);
+			Result selectionSortedResults = selectionSort.sortWithSteps(listForStepsMerge);
 			
 			log += "\n=========================================================================================================================\n";
 			log += "RESULTS:";
@@ -130,14 +131,18 @@ public class Driver {
 			
 			log += "ORDERED LISTS:\n";
 			log += "\nSELECTION SORT:\n";
-			log += "\t" + writeListState(selectionSorted) + "\n";
+			log += "\t" + writeListState(selectionSortedResults.getSorted()) + "\n";
 			log += "\nMERGE SORT:\n";
 			log += "\t" + writeListState(mergeSortedResults.getSorted()) + "\n";
 			
 			log += "\nEXECUTION TIME:\n";
 			log += "\tSELECTION SORT: " + selectionSortTimer.getFormattedTimeLapsed() + "\n";
 			log += "\tMERGE SORT    : " + mergeSortTimer.getFormattedTimeLapsed() + "\n\n";
-			
+
+			log += "\nFREQUENCY COUNT:\n";
+			log += "\tSELECTION SORT : " + selectionSortedResults.getTotalFreqCount() + "\n";
+			log += "\tMERGE SORT     : " + mergeSortedResults.getTotalFreqCount() + "\n\n";			
+
 			log += "\n=========================================================================================================================\n";
 			log += "STEPS:";
 			log += "\n=========================================================================================================================\n";

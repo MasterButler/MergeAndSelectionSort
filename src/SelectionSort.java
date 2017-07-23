@@ -47,17 +47,30 @@ public class SelectionSort extends SortingAlgorithm {
 		Result result = new Result();
 		NumberList sorted = new NumberList();
 		
+		result.addToFreqCount(1); //unsorted.size == 0
 		while(unsorted.size() != 0){
+			result.addToFreqCount(1); //unsorted.size != 0
+			
+			result.addToFreqCount(1); //smallestIndex == 0
 			int smallestIndex = 0;
+			
+			result.addToFreqCount(1); //i == unsorted.size 
 			for(int i = 1; i < unsorted.size(); i++){
+				//result.addToFreqCount(1); //i <unsorted.size 
+				//result.addToFreqCount(1); //i++
+				//result.addToFreqCount(1); //if....
+				result.addToFreqCount(3);
 				if(unsorted.get(smallestIndex) > unsorted.get(i)){
+					result.addToFreqCount(1); //smallestIndex = i
 					smallestIndex = i;
 				}
 			}
 			
+			result.addToFreqCount(1);//leastElement = ...
 			int leastElement = unsorted.get(smallestIndex);
 			result.getSteps().add(writeState(sorted, unsorted, leastElement));
 //			System.out.println(result.getSteps().get(result.getSteps().size()-1));
+			result.addToFreqCount(1);//sorted.add
 			sorted.add(unsorted.remove(smallestIndex));
 		}
 		

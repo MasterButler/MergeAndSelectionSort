@@ -45,23 +45,12 @@ public class MergeSort extends SortingAlgorithm{
 	
 	@Override
 	public Result sortWithSteps(NumberList unsorted) {
-		System.out.println("IN");
-		log = Logger.getLogger("my.logger");
-		log.setLevel(Level.ALL);
-		handler = new ConsoleHandler();
-		handler.setFormatter(new SimpleFormatter());
-		log.addHandler(handler);
-		handler.setLevel(Level.ALL);
-		log.info("hello world");
+		log = MyLogger.getInstance().getLogger();
 		
-		NumberList list = new NumberList();
-		if(unsorted.size() == 1){
-			list.add(unsorted.get(0));
-		}else{
-			list = splitWithSteps(unsorted);	
-		}
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
+		NumberList list = splitWithSteps(unsorted);
+		
 		MergeSortResultRecorder.getInstance().setSorted(list);
-		
 		MergeSortResultRecorder.getInstance().addStep("Merge sort successfully finished.");
 		
 		return MergeSortResultRecorder.getInstance().getResult();
@@ -80,9 +69,7 @@ public class MergeSort extends SortingAlgorithm{
 
 	public NumberList split(NumberList toSplit){
 		
-		if(toSplit.size() == 1){
-			return toSplit;
-		}else{
+		if(toSplit.size() > 1){
 			NumberList left = new NumberList();
 			NumberList right = new NumberList();
 			
@@ -93,6 +80,8 @@ public class MergeSort extends SortingAlgorithm{
 			right = split(right);
 			
 			return mergeAndSort(left, right);
+		}else{
+			return toSplit;
 		}
 	}
 	
@@ -119,25 +108,27 @@ public class MergeSort extends SortingAlgorithm{
 	
 	
 	public NumberList splitWithSteps(NumberList toSplit){
-		
-		if(toSplit.size() == 1){
-			return toSplit;
-		}else{
+		if(toSplit.size() > 1){
 			NumberList left = new NumberList();
 			NumberList right = new NumberList();
 			
 			left.addAll(toSplit.subList(0, toSplit.size()/2));
 			right.addAll(toSplit.subList(toSplit.size()/2, toSplit.size()));
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);
 			
 			MergeSortResultRecorder.getInstance().addStep(writeListSplitCase(toSplit, left, right));
 			log.info(writeListSplitCase(toSplit, left, right));
-//			if(MergeSortResultRecorder.getInstance().getSteps().size() % 10000 == 0){
-//				log.fine("Currently writing step number " + MergeSortResultRecorder.getInstance().getSteps());
-//			}
-			left = splitWithSteps(left);
-			right = splitWithSteps(right);
 			
+			left = splitWithSteps(left);
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
+			right = splitWithSteps(right);
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
+			
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			return mergeAndSortWithSteps(left, right);
+		}else{
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
+			return toSplit;
 		}
 	}
 	
@@ -148,16 +139,28 @@ public class MergeSort extends SortingAlgorithm{
 		String rightList = writeListState(right);
 				
 		int size = left.size() + right.size();
+		
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);// i = 0
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//i == size
 		for(int i = 0; i < size; i++){
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1); //i < size
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1); //i++
+			
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			if(left.size() > 0 && right.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				if(left.get(0) < right.get(0)){  
+					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 					merged.add(left.remove(0));
 				}else{
+					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 					merged.add(right.remove(0));
 				}
 			}else if(left.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				merged.add(left.remove(0));
 			}else if(right.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				merged.add(right.remove(0));
 			}
 		}

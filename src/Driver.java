@@ -30,7 +30,6 @@ public class Driver {
 
 			}
 		}while(input != 0);
-		
 	}
 	
 	public static void enterInputManually(){
@@ -50,6 +49,7 @@ public class Driver {
 		System.out.print("Enter how many values will be randomly generated (MAX SIZE OF AN ARRAYLIST IS " + Integer.MAX_VALUE +  " : ");
 		int size = sc.nextInt();
 		list = InputRandomizer.generateRandomInput(size);
+		solve(list);
 	}
 	
 	public static void enterInputUsingFile(){
@@ -91,65 +91,117 @@ public class Driver {
 	}
 	
 	private static void solve(NumberList list){
-		SortingAlgorithm mergeSort = new MergeSort();
-		SortingAlgorithm selectionSort = new SelectionSort();
-		
-		NanoTimer mergeSortTimer = new NanoTimer();
-		NanoTimer selectionSortTimer = new NanoTimer();
-		
-		Result mergeSortResult;
-		Result selectionSortResult;
-		
-		String log = ""; 
-		log += "GENERATED LIST TO SORT: \n";
-		log += "\t" + writeListState(list) + "\n";
-		
-		mergeSortTimer.start();
-		NumberList mergeSorted = mergeSort.sort(list);
-		mergeSortTimer.stop();
-		
-		selectionSortTimer.start();
-		NumberList selectionSorted = selectionSort.sort(list);
-		selectionSortTimer.stop();
-		
-		log += "\n=========================================================================================================================\n";
-		log += "RESULTS:";
-		log += "\n=========================================================================================================================\n";
-		
-		log += "ORDERED LISTS:\n";
-		log += "\nSELECTION SORT:\n";
-		log += "\t" + writeListState(selectionSorted) + "\n";
-		log += "MERGE SORT:\n";
-		log += "\t" + writeListState(mergeSorted) + "\n";
-		
-		log += "\nEXECUTION TIME:\n";
-		log += "\tSELECTION SORT: " + selectionSortTimer.getFormattedTimeLapsed() + "\n";
-		log += "\tMERGE SORT    : " + mergeSortTimer.getFormattedTimeLapsed() + "\n\n";
-		
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd_HHmmss");
-		String filename = "result_" + sdf.format(date);
-		filename = generateFilename(filename, ".txt");
-		
-		System.out.print("\n" + log);
-		
-		if(TextFileWriter.save(filename, log)){
-			System.out.println("Results saved under \"" + new File(filename).getAbsolutePath() + "\"");
+		solve(list, false);
+	}
+	
+	private static void solve(NumberList list, boolean legit){
+		if(legit){
+			NumberList listForSteps = new NumberList();
+			listForSteps.addAll(list);
+			
+			SortingAlgorithm mergeSort = new MergeSort();
+			SortingAlgorithm selectionSort = new SelectionSort();
+			
+			NanoTimer mergeSortTimer = new NanoTimer();
+			NanoTimer selectionSortTimer = new NanoTimer();
+			
+			System.out.println("START SOLVING");
+			
+			String log = ""; 
+			log += "GENERATED LIST TO SORT: \n";
+			log += "\t" + writeListState(list) + "\n";
+			
+			mergeSortTimer.start();
+			NumberList mergeSorted = mergeSort.sort(list);
+			mergeSortTimer.stop();
+			
+			selectionSortTimer.start();
+			NumberList selectionSorted = selectionSort.sort(list);
+			selectionSortTimer.stop();
+			
+			System.out.println("STARTING MERGE SORT");
+			
+			Result mergeSortedResults = new Result();
+			Result selectionSortedResults = new Result();
+			
+			log += "\n=========================================================================================================================\n";
+			log += "RESULTS:";
+			log += "\n=========================================================================================================================\n";
+			
+			log += "ORDERED LISTS:\n";
+			log += "\nSELECTION SORT:\n";
+			log += "\t" + writeListState(selectionSorted) + "\n";
+			log += "\nMERGE SORT:\n";
+			log += "\t" + writeListState(mergeSortedResults.getSorted()) + "\n";
+			
+			log += "\nEXECUTION TIME:\n";
+			log += "\tSELECTION SORT: " + selectionSortTimer.getFormattedTimeLapsed() + "\n";
+			log += "\tMERGE SORT    : " + mergeSortTimer.getFormattedTimeLapsed() + "\n\n";
+			
+			log += "\n=========================================================================================================================\n";
+			log += "STEPS:";
+			log += "\n=========================================================================================================================\n";
+			
+			log += "\nSELECTION SORT:\n";
+			for(int i = 0; i < selectionSortedResults.getSteps().size(); i++){
+				log += selectionSortedResults.getSteps().get(i) + "\n";
+			}		
+			log += "MERGE SORT:\n";
+			
+			int upperlimit;
+			String toAdd = "";
+			if(mergeSortedResults.getSteps().size() > 1000){
+				upperlimit = 998;
+				toAdd = "...\n" + mergeSortedResults.getSteps().get(mergeSortedResults.getSteps().size()-2) + "\n" + mergeSortedResults.getSteps().get(mergeSortedResults.getSteps().size()-1) + "\n";
+			}else{
+				upperlimit = mergeSortedResults.getSteps().size();
+			}
+			for(int i = 0; i < upperlimit; i++){
+				log += mergeSortedResults.getSteps().get(i) + "\n";
+			}
+			log+=toAdd;
+			
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd_HHmmss");
+			String filename = "result_" + sdf.format(date);
+			filename = generateFilename(filename, ".txt");
+			
+			System.out.print("\n" + log);
+			
+			if(TextFileWriter.save(filename, log)){
+				System.out.println("Results saved under \"" + new File(filename).getAbsolutePath() + "\"");
+			}else{
+				System.out.println("Problems encountered when saving results under " + filename + ". Saving aborted.");
+			}
+			
+			System.out.println();
 		}else{
-			System.out.println("Problems encountered when saving results under " + filename + ". Saving aborted.");
+//			SortingAlgorithm mergeSort = new MergeSort();
+//			NanoTimer mergeSortTimer = new NanoTimer();
+			
+			SortingAlgorithm selectionSort = new SelectionSort();
+			NanoTimer selectionSortTimer = new NanoTimer();
+			System.out.println("MERGE SORT:");
+			for(int i = 0; i < 3; i++){
+				NumberList toUse = new NumberList();
+				toUse.addAll(list);
+				selectionSortTimer.reset();
+				selectionSortTimer.start();
+				NumberList selectionSorted = selectionSort.sort(toUse);
+				selectionSortTimer.stop();
+				System.out.println("TRIAL " + (i+1) + ": " + selectionSortTimer.getFormattedTimeLapsed() + "\n");
+			}
+			
 		}
 		
-		System.out.println();
 	}
 	
 	private static String writeListState(NumberList list){
 		String listString = "[";
 		for(int i = 0; i < list.size(); i++){
-			listString += list.get(i);
-			 if(i != list.size()-1){
-				 listString += ", ";
-			 }
+			listString += list.get(i) + ",";
 		}	
+		listString = listString.substring(0, listString.length()-1);
 		listString += "]";
 		return listString;
 	}
@@ -160,11 +212,9 @@ public class Driver {
 		}else{
 			String listString = "[";
 			for(int i = 0; i < limit; i++){
-				listString += list.get(i);
-				if(i != limit-1){
-					listString += ", ";
-				}
-			}	
+				listString += list.get(i) + ", ";
+			}
+			listString = listString.substring(0, listString.length()-1);
 			listString += " ... and " + (list.size()-limit) + " more numbers]";
 			return listString;			
 		}

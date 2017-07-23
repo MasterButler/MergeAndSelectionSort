@@ -10,7 +10,7 @@ public class InputRandomizer {
 		NumberList randomList = new NumberList();
 		Random rand = new Random();
 		for(int i = 0; i < n; i++){
-			randomList.add(rand.nextInt());
+			randomList.add(rand.nextInt(n-1)+1);
 //			System.out.println(i);
 		}
 		

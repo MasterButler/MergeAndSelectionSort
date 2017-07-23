@@ -57,12 +57,14 @@ public class SelectionSort extends SortingAlgorithm {
 			
 			int leastElement = unsorted.get(smallestIndex);
 			result.getSteps().add(writeState(sorted, unsorted, leastElement));
-			
+//			System.out.println(result.getSteps().get(result.getSteps().size()-1));
 			sorted.add(unsorted.remove(smallestIndex));
 		}
 		
 		result.getSteps().add(writeState(sorted, unsorted, null));
 		result.setSorted(sorted);
+		
+		result.getSteps().add("Selection sort successfully finished.\n");
 		
 		return result;
 	}

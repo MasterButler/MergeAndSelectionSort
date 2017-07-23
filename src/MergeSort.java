@@ -1,17 +1,23 @@
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class MergeSort extends SortingAlgorithm{
+	
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	Logger log;
+	ConsoleHandler handler;
 	
 	public MergeSort(){
 	}
 	
-	private String writeListState(NumberList list){
+	private static String writeListState(NumberList list){
 		String listString = "[";
 		for(int i = 0; i < list.size(); i++){
-			listString += list.get(i);
-			 if(i != list.size()-1){
-				 listString += ", ";
-			 }
+			listString += list.get(i) + ",";
 		}	
+		listString = listString.substring(0, listString.length()-1);
 		listString += "]";
 		return listString;
 	}
@@ -39,7 +45,22 @@ public class MergeSort extends SortingAlgorithm{
 	
 	@Override
 	public Result sortWithSteps(NumberList unsorted) {
-		MergeSortResultRecorder.getInstance().setSorted(splitWithSteps(unsorted));
+		System.out.println("IN");
+		log = Logger.getLogger("my.logger");
+		log.setLevel(Level.ALL);
+		handler = new ConsoleHandler();
+		handler.setFormatter(new SimpleFormatter());
+		log.addHandler(handler);
+		handler.setLevel(Level.ALL);
+		log.info("hello world");
+		
+		NumberList list = new NumberList();
+		if(unsorted.size() == 1){
+			list.add(unsorted.get(0));
+		}else{
+			list = splitWithSteps(unsorted);	
+		}
+		MergeSortResultRecorder.getInstance().setSorted(list);
 		
 		MergeSortResultRecorder.getInstance().addStep("Merge sort successfully finished.");
 		
@@ -48,6 +69,12 @@ public class MergeSort extends SortingAlgorithm{
 
 	@Override
 	public NumberList sort(NumberList unsorted) {
+
+		if(unsorted.size() == 1){
+			NumberList list = new NumberList();
+			list.add(unsorted.get(0));
+			return list;	
+		}
 		return split(unsorted);
 	}
 
@@ -103,7 +130,10 @@ public class MergeSort extends SortingAlgorithm{
 			right.addAll(toSplit.subList(toSplit.size()/2, toSplit.size()));
 			
 			MergeSortResultRecorder.getInstance().addStep(writeListSplitCase(toSplit, left, right));
-			
+			log.info(writeListSplitCase(toSplit, left, right));
+//			if(MergeSortResultRecorder.getInstance().getSteps().size() % 10000 == 0){
+//				log.fine("Currently writing step number " + MergeSortResultRecorder.getInstance().getSteps());
+//			}
 			left = splitWithSteps(left);
 			right = splitWithSteps(right);
 			

@@ -35,3 +35,4 @@ public class MergeSortResultRecorder {
 		return this.result;
 	}
 }
+

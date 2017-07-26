@@ -8,8 +8,13 @@ public class MergeSort extends SortingAlgorithm{
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	Logger log;
 	ConsoleHandler handler;
+	long totalFC;
 	
 	public MergeSort(){
+	}
+	
+	public long getTotalFC(){
+		return this.totalFC;
 	}
 	
 	private static String writeListState(NumberList list){
@@ -46,6 +51,7 @@ public class MergeSort extends SortingAlgorithm{
 	@Override
 	public Result sortWithSteps(NumberList unsorted) {
 		log = MyLogger.getInstance().getLogger();
+		MergeSortResultRecorder.getInstance().getResult().setTotalFreqCount(0);
 		
 		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		NumberList list = splitWithSteps(unsorted);
@@ -58,51 +64,64 @@ public class MergeSort extends SortingAlgorithm{
 
 	@Override
 	public NumberList sort(NumberList unsorted) {
-
-		if(unsorted.size() == 1){
-			NumberList list = new NumberList();
-			list.add(unsorted.get(0));
-			return list;	
-		}
+		MergeSortResultRecorder.getInstance().getResult().setTotalFreqCount(0);
+		
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		return split(unsorted);
 	}
 
 	public NumberList split(NumberList toSplit){
-		
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//if...
 		if(toSplit.size() > 1){
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(4);
 			NumberList left = new NumberList();
 			NumberList right = new NumberList();
 			
 			left.addAll(toSplit.subList(0, toSplit.size()/2));
 			right.addAll(toSplit.subList(toSplit.size()/2, toSplit.size()));
 			
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);
 			left = split(left);
 			right = split(right);
 			
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			return mergeAndSort(left, right);
 		}else{
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			return toSplit;
 		}
 	}
 	
 	public NumberList mergeAndSort(NumberList left, NumberList right){
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		NumberList merged = new NumberList();
 		
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		int size = left.size() + right.size();
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);//i = 0, i == size
 		for(int i = 0; i < size; i++){
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2); //i++, i < size
+			
+			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			if(left.size() > 0 && right.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//if
 				if(left.get(0) < right.get(0)){
+					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//merge.add
 					merged.add(left.remove(0));
 				}else{
+					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//merge.add
 					merged.add(right.remove(0));
 				}
 			}else if(left.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);//else if, merge.add
 				merged.add(left.remove(0));
 			}else if(right.size() > 0){
+				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);//else if, merge.add
 				merged.add(right.remove(0));
 			}
 		}
 		
+		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		return merged;
 	}
 	

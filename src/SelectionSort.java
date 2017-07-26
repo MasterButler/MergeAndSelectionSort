@@ -1,6 +1,12 @@
 
 public class SelectionSort extends SortingAlgorithm {
 	
+	long totalFC = 0;
+	
+	public long getTotalFC(){
+		return totalFC;
+	}
+	
 	private String writeListState(NumberList list){
 		String listString = "[";
 		for(int i = 0; i < list.size(); i++){
@@ -88,18 +94,29 @@ public class SelectionSort extends SortingAlgorithm {
 	 * @return sorted list
 	 */
 	public NumberList sort(NumberList unsorted){
+		totalFC = 0;
 		NumberList sorted = new NumberList();
-		
+		totalFC++;
+		totalFC++; //size != 0
 		while(unsorted.size() != 0){
+			
 			int smallestIndex = 0;
+			totalFC++;
+			
+			totalFC+=2;// i=1,i=unsorted.size
 			for(int i = 1; i < unsorted.size(); i++){
+				totalFC+=3; //i < size; i++,if...
+
 				if(unsorted.get(smallestIndex) > unsorted.get(i)){
 					smallestIndex = i;
+					totalFC++;
 				}
 			}
 			sorted.add(unsorted.remove(smallestIndex));
+			totalFC++;
 		}
 		
+		totalFC++;
 		return sorted;
 	}
 }

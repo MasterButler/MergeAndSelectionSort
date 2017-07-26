@@ -92,7 +92,7 @@ public class Driver {
 	}
 	
 	private static void solve(NumberList list){
-		solve(list, true);
+		solve(list, false);
 	}
 	
 	private static void solve(NumberList list, boolean legit){
@@ -187,14 +187,17 @@ public class Driver {
 			SortingAlgorithm selectionSort = new SelectionSort();
 			NanoTimer selectionSortTimer = new NanoTimer();
 			System.out.println("MERGE SORT:");
-			for(int i = 0; i < 3; i++){
-				NumberList toUse = new NumberList();
-				toUse.addAll(list);
+
+			MergeSortResultRecorder.getInstance();
+			int val = 1;
+			for(int i = 0; i < val; i++){
+				NumberList toSort = new NumberList();
+				toSort.addAll(list);
 				selectionSortTimer.reset();
 				selectionSortTimer.start();
-				NumberList selectionSorted = selectionSort.sort(toUse);
+				NumberList mergeSorted = selectionSort.sort(list);
 				selectionSortTimer.stop();
-				System.out.println("TRIAL " + (i+1) + ": " + selectionSortTimer.getFormattedTimeLapsed() + "\n");
+				System.out.println("TRIAL " + (i+1) + ": \nTOTAL TIME: " + selectionSortTimer.getFormattedTimeLapsed() + "\nTOTAL FC  : " + ((SelectionSort)selectionSort).getTotalFC() + "\n");
 			}
 			
 		}

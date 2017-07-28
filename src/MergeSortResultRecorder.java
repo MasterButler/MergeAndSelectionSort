@@ -31,6 +31,10 @@ public class MergeSortResultRecorder {
 		result.setSorted(sorted);
 	}
 	
+	public void initializeResult(){
+		this.result = new Result();
+	}
+	
 	public Result getResult(){
 		return this.result;
 	}

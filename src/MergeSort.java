@@ -5,9 +5,6 @@ import java.util.logging.SimpleFormatter;
 
 public class MergeSort extends SortingAlgorithm{
 	
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	Logger log;
-	ConsoleHandler handler;
 	long totalFC;
 	
 	public MergeSort(){
@@ -49,15 +46,13 @@ public class MergeSort extends SortingAlgorithm{
 	}
 	
 	@Override
-	public Result sortWithSteps(NumberList unsorted) {
-		log = MyLogger.getInstance().getLogger();
-		MergeSortResultRecorder.getInstance().getResult().setTotalFreqCount(0);
+	public Result sortWithSteps(NumberList unsorted){
+		MergeSortResultRecorder.getInstance().initializeResult();
 		
-		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 		NumberList list = splitWithSteps(unsorted);
 		
 		MergeSortResultRecorder.getInstance().setSorted(list);
-		MergeSortResultRecorder.getInstance().addStep("Merge sort successfully finished.");
+		MergeSortResultRecorder.getInstance().addStep("Merge sort successfully finished.\n");
 		
 		return MergeSortResultRecorder.getInstance().getResult();
 	}
@@ -133,20 +128,13 @@ public class MergeSort extends SortingAlgorithm{
 			
 			left.addAll(toSplit.subList(0, toSplit.size()/2));
 			right.addAll(toSplit.subList(toSplit.size()/2, toSplit.size()));
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(2);
 			
 			MergeSortResultRecorder.getInstance().addStep(writeListSplitCase(toSplit, left, right));
-			log.info(writeListSplitCase(toSplit, left, right));
 			
 			left = splitWithSteps(left);
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			right = splitWithSteps(right);
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
-			
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			return mergeAndSortWithSteps(left, right);
 		}else{
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			return toSplit;
 		}
 	}
@@ -158,28 +146,17 @@ public class MergeSort extends SortingAlgorithm{
 		String rightList = writeListState(right);
 				
 		int size = left.size() + right.size();
-		
-		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);// i = 0
-		MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);//i == size
 		for(int i = 0; i < size; i++){
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1); //i < size
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1); //i++
 			
-			MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 			if(left.size() > 0 && right.size() > 0){
-				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				if(left.get(0) < right.get(0)){  
-					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 					merged.add(left.remove(0));
 				}else{
-					MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 					merged.add(right.remove(0));
 				}
 			}else if(left.size() > 0){
-				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				merged.add(left.remove(0));
 			}else if(right.size() > 0){
-				MergeSortResultRecorder.getInstance().getResult().addToFreqCount(1);
 				merged.add(right.remove(0));
 			}
 		}

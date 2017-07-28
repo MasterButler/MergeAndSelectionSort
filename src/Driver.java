@@ -8,6 +8,7 @@ public class Driver {
 	
 	public static void main(String[] args){
 		int input;
+		System.out.println(writeListState(InputGenerator.generateWorstCaseMerge(100)));
 		do{
 			System.out.println("0 - Exit");
 			System.out.println("1 - Input values");
@@ -50,7 +51,7 @@ public class Driver {
 		
 		System.out.print("Enter how many values will be randomly generated (MAX SIZE OF AN ARRAYLIST IS " + Integer.MAX_VALUE +  " : ");
 		int size = sc.nextInt();
-		list = InputRandomizer.generateRandomInput(size);
+		list = InputGenerator.generateRandomInput(size);
 		solve(list);
 		
 	}
@@ -92,124 +93,113 @@ public class Driver {
 	}
 	
 	private static void solve(NumberList list){
-		solve(list, false);
-	}
+		int sizeToCheck; 
+		NumberList listForStepsSelection = new NumberList();
+		NumberList listForStepsMerge = new NumberList();
 	
-	private static void solve(NumberList list, boolean legit){
-		if(legit){
-			NumberList listForStepsSelection = new NumberList();
-			NumberList listForStepsMerge = new NumberList();
-			listForStepsSelection.addAll(list);
-			listForStepsMerge.addAll(list);
-			
-			SortingAlgorithm mergeSort = new MergeSort();
-			SortingAlgorithm selectionSort = new SelectionSort();
-			
-			NanoTimer mergeSortTimer = new NanoTimer();
-			NanoTimer selectionSortTimer = new NanoTimer();
-			
-			System.out.println("START SOLVING");
-			
-			String log = ""; 
-			log += "GENERATED LIST TO SORT: \n";
-			log += "\t" + writeListState(list) + "\n";
-			
-			mergeSortTimer.start();
-			NumberList mergeSorted = mergeSort.sort(list);
-			mergeSortTimer.stop();
-			
-			selectionSortTimer.start();
-			NumberList selectionSorted = selectionSort.sort(list);
-			selectionSortTimer.stop();
-			
-			Result mergeSortedResults = mergeSort.sortWithSteps(listForStepsSelection);
-			Result selectionSortedResults = selectionSort.sortWithSteps(listForStepsMerge);
-			
+		SortingAlgorithm mergeSort = new MergeSort();
+		SortingAlgorithm selectionSort = new SelectionSort();
+	
+		NanoTimer mergeSortTimer = new NanoTimer();
+		NanoTimer selectionSortTimer = new NanoTimer();
+	
+		NumberList mergeSorted; 
+		long mergeSortedFrequencyCount;
+		Result mergeSortedResults;
+		
+		NumberList selectionSorted;
+		Result selectionSortedResults;
+		long selectionSortedFrequencyCount;
+		
+		sizeToCheck = list.size();
+		listForStepsSelection.addAll(list);
+		listForStepsMerge.addAll(list);
+	
+		String log = ""; 
+		log += "GENERATED LIST TO SORT: \n";
+		log += "\t" + writeListState(list) + "\n";
+	
+		mergeSortTimer.start();
+		mergeSorted = mergeSort.sort(list);
+		mergeSortTimer.stop();
+		mergeSortedFrequencyCount = MergeSortResultRecorder.getInstance().getResult().getTotalFreqCount();
+	
+		selectionSortTimer.start();
+		selectionSorted = selectionSort.sort(list);
+		selectionSortTimer.stop();
+		selectionSortedFrequencyCount = ((SelectionSort)selectionSort).getTotalFC();
+	
+		
+		if(sizeToCheck <= 100){
+			System.out.println("LISTING DOWN STEPS...");
+			mergeSortedResults = mergeSort.sortWithSteps(listForStepsSelection);
+			selectionSortedResults = selectionSort.sortWithSteps(listForStepsMerge);
+		}else{
+			mergeSortedResults = null;
+			selectionSortedResults = null;
+		}
+	
+		log += "\n=========================================================================================================================\n";
+		log += "RESULTS:";
+		log += "\n=========================================================================================================================\n";
+	
+		log += "ORDERED LISTS:\n";
+		log += "\nSELECTION SORT:\n";
+		log += "\t" + writeListState(selectionSorted) + "\n";
+		log += "\nMERGE SORT:\n";
+		log += "\t" + writeListState(mergeSorted) + "\n";
+	
+		log += "\nEXECUTION TIME:\n";
+		log += "\tSELECTION SORT: " + selectionSortTimer.getFormattedTimeLapsed() + "\n";
+		log += "\tMERGE SORT    : " + mergeSortTimer.getFormattedTimeLapsed() + "\n\n";
+    
+		log += "\nFREQUENCY COUNT:\n";
+		log += "\tSELECTION SORT : " + selectionSortedFrequencyCount + "\n";
+		log += "\tMERGE SORT     : " + mergeSortedFrequencyCount + "\n\n";			
+		
+		if(sizeToCheck <= 100){
 			log += "\n=========================================================================================================================\n";
-			log += "RESULTS:";
+			log += "STEPS FOR SELECTION SORT:";
 			log += "\n=========================================================================================================================\n";
-			
-			log += "ORDERED LISTS:\n";
-			log += "\nSELECTION SORT:\n";
-			log += "\t" + writeListState(selectionSortedResults.getSorted()) + "\n";
-			log += "\nMERGE SORT:\n";
-			log += "\t" + writeListState(mergeSortedResults.getSorted()) + "\n";
-			
-			log += "\nEXECUTION TIME:\n";
-			log += "\tSELECTION SORT: " + selectionSortTimer.getFormattedTimeLapsed() + "\n";
-			log += "\tMERGE SORT    : " + mergeSortTimer.getFormattedTimeLapsed() + "\n\n";
-
-			log += "\nFREQUENCY COUNT:\n";
-			log += "\tSELECTION SORT : " + selectionSortedResults.getTotalFreqCount() + "\n";
-			log += "\tMERGE SORT     : " + mergeSortedResults.getTotalFreqCount() + "\n\n";			
-
-			log += "\n=========================================================================================================================\n";
-			log += "STEPS:";
-			log += "\n=========================================================================================================================\n";
-			
-			log += "\nSELECTION SORT:\n";
+		
 			for(int i = 0; i < selectionSortedResults.getSteps().size(); i++){
 				log += selectionSortedResults.getSteps().get(i) + "\n";
-			}		
-			log += "MERGE SORT:\n";
-			
-			int upperlimit;
-			String toAdd = "";
-			if(mergeSortedResults.getSteps().size() > 1000){
-				upperlimit = 998;
-				toAdd = "...\n" + mergeSortedResults.getSteps().get(mergeSortedResults.getSteps().size()-2) + "\n" + mergeSortedResults.getSteps().get(mergeSortedResults.getSteps().size()-1) + "\n";
-			}else{
-				upperlimit = mergeSortedResults.getSteps().size();
 			}
-			for(int i = 0; i < upperlimit; i++){
+			
+			log += "\n=========================================================================================================================\n";
+			log += "STEPS FOR MERGE SORT:";
+			log += "\n=========================================================================================================================\n";
+		
+			for(int i = 0; i < mergeSortedResults.getSteps().size(); i++){
 				log += mergeSortedResults.getSteps().get(i) + "\n";
 			}
-			log+=toAdd;
-			
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd_HHmmss");
-			String filename = "result_" + sdf.format(date);
-			filename = generateFilename(filename, ".txt");
-			
-			System.out.print("\n" + log);
-			
-			if(TextFileWriter.save(filename, log)){
-				System.out.println("Results saved under \"" + new File(filename).getAbsolutePath() + "\"");
-			}else{
-				System.out.println("Problems encountered when saving results under " + filename + ". Saving aborted.");
-			}
-			
-			System.out.println();
 		}else{
-//			SortingAlgorithm mergeSort = new MergeSort();
-//			NanoTimer mergeSortTimer = new NanoTimer();
-			
-			SortingAlgorithm selectionSort = new SelectionSort();
-			NanoTimer selectionSortTimer = new NanoTimer();
-			System.out.println("MERGE SORT:");
-
-			MergeSortResultRecorder.getInstance();
-			int val = 1;
-			for(int i = 0; i < val; i++){
-				NumberList toSort = new NumberList();
-				toSort.addAll(list);
-				selectionSortTimer.reset();
-				selectionSortTimer.start();
-				NumberList mergeSorted = selectionSort.sort(list);
-				selectionSortTimer.stop();
-				System.out.println("TRIAL " + (i+1) + ": \nTOTAL TIME: " + selectionSortTimer.getFormattedTimeLapsed() + "\nTOTAL FC  : " + ((SelectionSort)selectionSort).getTotalFC() + "\n");
-			}
-			
+			log += "Steps not recorded. List size is too big.";
 		}
-		
+	
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd_HHmmss");
+		String filename = "result_" + sdf.format(date);
+		filename = generateFilename(filename, ".txt");
+	
+		System.out.print("\n" + log);
+	
+		if(TextFileWriter.save(filename, log)){
+			System.out.println("Results saved under \"" + new File(filename).getAbsolutePath() + "\"");
+		}else{
+			System.out.println("Problems 1encountered when saving results under " + filename + ". Saving aborted.");
+		}
+	
+		System.out.println();
+	
 	}
 	
 	private static String writeListState(NumberList list){
 		String listString = "[";
 		for(int i = 0; i < list.size(); i++){
-			listString += list.get(i) + ",";
+			listString += "" + list.get(i) + ", ";
 		}	
-		listString = listString.substring(0, listString.length()-1);
+		listString = listString.substring(0, listString.length()-2);
 		listString += "]";
 		return listString;
 	}
